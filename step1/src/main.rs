@@ -1,10 +1,28 @@
 use std::fs;
 use std::error::Error;
 
-fn main() -> Result<(), Box<Error>>  {
-    println!("Hello, world!");
+use structopt::StructOpt;
 
-    let data = fs::read("input")?;
+#[repr(u8)]
+enum OpCode {
+    Hlt = 0,
+}
+
+struct Machine<'a> {
+    memory: &'a [u8],
+    pc: usize,
+}
+
+#[derive(StructOpt)]
+struct Opts {
+    /// name of executable in rwa2 format
+    input: String,
+}
+
+fn main() -> Result<(), Box<Error>>  {
+    let args = Opts::from_args();
+
+    let data = fs::read(&args.input)?;
     println!("{:?}", &data);
 
     Ok(())
