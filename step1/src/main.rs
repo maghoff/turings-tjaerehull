@@ -3,14 +3,36 @@ use std::error::Error;
 
 use structopt::StructOpt;
 
-#[repr(u8)]
-enum OpCode {
-    Hlt = 0,
-}
-
-struct Machine<'a> {
+struct MachineState<'a> {
     memory: &'a [u8],
     pc: usize,
+    running: bool,
+}
+
+impl<'a> MachineState<'a> {
+    fn new(memory: &[u8]) -> MachineState {
+        MachineState {
+            memory,
+            pc: 0,
+            running: false,
+        }
+    }
+
+    fn run(&mut self) {
+        self.running = true;
+        while self.running {
+            self.step();
+        }
+    }
+
+    fn step(&mut self) {
+        let instruction = self.memory[self.pc];
+        self.pc += 1;
+        match instruction {
+            0 => self.running = false,
+            x => panic!("Invalid opcode {:?}", x),
+        }
+    }
 }
 
 #[derive(StructOpt)]
@@ -23,15 +45,9 @@ fn main() -> Result<(), Box<Error>>  {
     let args = Opts::from_args();
 
     let data = fs::read(&args.input)?;
-    println!("{:?}", &data);
+    let mut machine = MachineState::new(&data);
+
+    machine.run();
 
     Ok(())
-}
-
-#[cfg(test)]
-mod test {
-    #[test]
-    fn t() {
-        assert!(true);
-    }
 }
