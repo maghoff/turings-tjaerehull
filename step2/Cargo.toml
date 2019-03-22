@@ -1,0 +1,9 @@
+[package]
+name = "turings-tjerehull"
+version = "0.1.0"
+authors = ["Magnus Hovland Hoff <maghoff@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+structopt = "0.2.15"
+byteorder = "1.3.1"
